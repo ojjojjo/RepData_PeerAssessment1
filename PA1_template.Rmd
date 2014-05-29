@@ -58,7 +58,7 @@ The `r avestepsperitvl[which(avestepsperitvl[,2] == max(avestepsperitvl[,2])),1]
 nrow.na <- nrow(ac) - nrow(na.omit(ac))
 nrow.na2 <- sum(is.na(ac))
 ```
-the total number of missing values in the dataset is `r nrow.na`
+The total number of missing values in the dataset is `r nrow.na`
 
 Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
@@ -138,14 +138,25 @@ ac2[,4] <- as.factor(ac2[,4])
 # The new factor variable (Day) indicating whether a given date is a weedday or weekend day.
 class(ac2$Day) 
 levels(ac2$Day)
+
 ```
+
+
+To compare weekdays and weekends steps pattern, the average steps take for each interval in weekdays and weekends were calculated respectively. 
+```{r, echo = TRUE}
+#Average number of steps taken for each interval for all weekday days or weekend days respectively
+avestepsperitvl2 <- aggregate(steps ~ interval + Day, ac2, mean)
+avestepsperitvl2
+#Linear regression is used to compare the activity pattern between weekends and weekdays.
+a <- lm(steps ~ interval + Day + interval:Day, ac2)
+summary(a)
+```
+In general, there are less steps taken during weekends, but it also depend on days. Before 1500, there are less steps taken during weekends, but between 1500 to 2000, there are more steps taken during weekends.
+
 
 Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
 
 ```{r, echo = TRUE}
-#Average number of steps taken for each interval for all weekday days or weekend days respectively
-
-avestepsperitvl2 <- aggregate(steps ~ interval + Day, ac2, mean)
 
 library(ggplot2)
 ggplot(data = ac2, aes(x = interval, y = steps, group = Day)) + 
