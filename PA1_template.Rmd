@@ -4,9 +4,7 @@
 ## Loading and preprocessing the data
 ```{r,, echo = TRUE}
 ac <- read.csv("activity.csv")
-
 str(ac)
-
 #transform data into date format
 ac[,2] <- as.Date(ac[,2])
 ```
@@ -68,7 +66,7 @@ Create a new dataset that is equal to the original dataset but with the missing 
 3. Create a new dataframe to fill in missing data
 4. Filling: Fill in missing value with either number of steps taken each day or number of steps taken each interval, depending on whichever one is available.
 
-```{r, echo = TRUE}
+```{r, echo = TRUE, tidy=FALSE}
 #1 Make sure there is no NA in Dates and intervals
 sum(is.na(ac$date))
 sum(is.na(ac$interval))
@@ -90,8 +88,8 @@ for (i in 1:length(rowindex.na)){
     ac2[rowindex.na[i], 1] <- 
       avestepsperitvl[avestepsperitvl[,1] == ac2[rowindex.na[i],3],2]
   } 
-  # using average per day if availalbe
-  else if (ac2[rowindex.na[i],2] %in% avestepspd[,1]) { 
+  # using average per day if available
+  else if (ac2[rowindex.na[i],2] %in% avestepspd[,1]) {  
     ac2[rowindex.na[i], 1] <-  
       avestepspd[avestepspd[,1] == ac2[rowindex.na[i],3],2]
   }  
@@ -146,7 +144,7 @@ To compare weekdays and weekends steps pattern, the average steps take for each 
 ```{r, echo = TRUE}
 #Average number of steps taken for each interval for all weekday days or weekend days respectively
 avestepsperitvl2 <- aggregate(steps ~ interval + Day, ac2, mean)
-avestepsperitvl2
+
 #Linear regression is used to compare the activity pattern between weekends and weekdays.
 a <- lm(steps ~ interval + Day + interval:Day, ac2)
 summary(a)
@@ -162,4 +160,5 @@ library(ggplot2)
 ggplot(data = ac2, aes(x = interval, y = steps, group = Day)) + 
   geom_line() + facet_grid(Day ~ .) + theme_bw() +
   ylab("Number of steps") + xlab("Interval")
+
 ```
