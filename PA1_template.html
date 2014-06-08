@@ -259,8 +259,8 @@ nrow.na2 &lt;- sum(is.na(ac))
 <p>The total number of missing values in the dataset is 2304</p>
 
 <ul>
-<li><p>Devise a strategy for filling in all of the missing values in the dataset: using the mean/median for that day, or the mean for that 5-minute interval, etc.</p></li>
-<li><p>Create a new dataset that is equal to the original dataset but with the missing data filled in.</p></li>
+<li>Strategy for filling in all of the missing values: using the mean steps taken per day or the mean steps taken for that 5-minute interval, depending on whichever one is available.</li>
+<li>Create a new dataset that is equal to the original dataset but with the missing data filled in.</li>
 </ul>
 
 <h3>Steps for filling in Missing Values</h3>
@@ -294,7 +294,7 @@ avestepspd &lt;- aggregate(steps ~ date, ac, mean, na.action = na.omit)
 #3 Create a new dataframe (ac2) to fill in missing data
 ac2 &lt;- ac 
 
-#4 Filling
+#4 Filling in missing values
 rowindex.na &lt;- which(is.na(ac[,1]))
 
 for (i in 1:length(rowindex.na)){

@@ -79,8 +79,7 @@ nrow.na2 <- sum(is.na(ac))
 
 The total number of missing values in the dataset is 2304
 
-* Devise a strategy for filling in all of the missing values in the dataset: using the mean/median for that day, or the mean for that 5-minute interval, etc.
-
+* Strategy for filling in all of the missing values: using the mean steps taken per day or the mean steps taken for that 5-minute interval, depending on whichever one is available.
 * Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ### Steps for filling in Missing Values
@@ -117,7 +116,7 @@ avestepspd <- aggregate(steps ~ date, ac, mean, na.action = na.omit)
 #3 Create a new dataframe (ac2) to fill in missing data
 ac2 <- ac 
 
-#4 Filling
+#4 Filling in missing values
 rowindex.na <- which(is.na(ac[,1]))
 
 for (i in 1:length(rowindex.na)){
