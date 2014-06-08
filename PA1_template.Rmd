@@ -2,17 +2,23 @@
 
 
 ## Loading and preprocessing the data
-```{r,, echo = TRUE}
+
+* Load the data
+```{r load the data, echo = TRUE}
 ac <- read.csv("activity.csv")
-str(ac)
-#transform data into date format
+```
+
+* Process/transform the data (if necessary) into a format suitable for your analysis
+```{r data transformation, echo = TRUE}
+#transform the date into date format
 ac[,2] <- as.Date(ac[,2])
 ```
 
 
 ## What is mean total number of steps taken per day?
 
-```{r, echo = TRUE}
+* Make a histogram of the total number of steps taken each day
+```{r hist_total#steps, echo = TRUE}
 # total number of steps taken per day
 ttlstepspd <- aggregate(steps ~ date, ac, sum, na.action = na.omit)
 
@@ -27,6 +33,7 @@ hist(ttlstepspd[,2],
 ```
 
 
+* Calculate and report the mean and median total number of steps taken per day
 The mean total number of steps taken each day is `r meansteps`.
 The median total number of steps taken each day is `r mediansteps`.
 
@@ -34,23 +41,28 @@ The median total number of steps taken each day is `r mediansteps`.
 
 ## What is the average daily activity pattern?
 
-```{r, echo = TRUE}
+* Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+```{r average daily activity pattern, echo = TRUE}
 #Average number of steps taken for each interval
 avestepsperitvl <- aggregate(steps ~ interval, ac, mean, na.action = na.omit)
 
-plot(avestepsperitvl[,2] ~ avestepsperitvl[,1],
+plot(avestepsperitvl[,2] ~ avestepsperitvl[,1], type = "l",
      main = "Daily Activity Pattern",
      xlab = "5-minute Interval",
      ylab = "Number of steps")
 
 ```
 
+* Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
 The `r avestepsperitvl[which(avestepsperitvl[,2] == max(avestepsperitvl[,2])),1]` 5-minute interval contains the maximum number of steps (`r max(avestepsperitvl[,2])`).
 
 
 ## Imputing missing values
 
-```{r, echo = TRUE}
+* Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r #MissingValues, echo = TRUE}
 
 #the total number of rows with NAs
 nrow.na <- nrow(ac) - nrow(na.omit(ac))
@@ -58,7 +70,9 @@ nrow.na2 <- sum(is.na(ac))
 ```
 The total number of missing values in the dataset is `r nrow.na`
 
-Create a new dataset that is equal to the original dataset but with the missing data filled in.
+* Devise a strategy for filling in all of the missing values in the dataset: using the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+* Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ### Steps for filling in Missing Values
 1. Make sure there is no NA in Dates and intervals
@@ -66,7 +80,7 @@ Create a new dataset that is equal to the original dataset but with the missing 
 3. Create a new dataframe to fill in missing data
 4. Filling: Fill in missing value with either number of steps taken each day or number of steps taken each interval, depending on whichever one is available.
 
-```{r, echo = TRUE, tidy=FALSE}
+```{r Filling in missing values, echo = TRUE, tidy=FALSE}
 #1 Make sure there is no NA in Dates and intervals
 sum(is.na(ac$date))
 sum(is.na(ac$interval))
@@ -97,8 +111,8 @@ for (i in 1:length(rowindex.na)){
 ```
 
 
-Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
-```{r, echo = TRUE}
+* Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
+```{r hist_total#steps/day_imputed, echo = TRUE}
 # total number of steps taken per day
 ttlstepspd2 <- aggregate(steps ~ date, ac2, sum)
 
@@ -115,8 +129,8 @@ After missing values are filled in, the mean total number of steps taken per day
 After missing values are filled in, the median total number of steps taken per day is `r mediansteps2`.
 
 
-Do these values differ from the estimates from the first part of the assignment?
-```{r, echo = TRUE}
+* Do these values differ from the estimates from the first part of the assignment?
+```{r Comparing the mean steps with missing value imputed or not, echo = TRUE}
 t.test(ttlstepspd[,2], ttlstepspd2[,2])
 ```
 
@@ -125,8 +139,8 @@ It does not differ from the estimates from the first part of the assignment. Imp
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
-```{r, echo = TRUE}
+* Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+```{r creating weekdays/weekends, echo = TRUE}
 ac2$Day <- weekdays(ac2[,2])
 
 ac2[,4][ac2[,4] %in% unique(ac2[,4])[1:5]] <- "weekday"
@@ -141,7 +155,7 @@ levels(ac2$Day)
 
 
 To compare weekdays and weekends steps pattern, the average steps take for each interval in weekdays and weekends were calculated respectively. 
-```{r, echo = TRUE}
+```{r Comparing weekday/weekend pattern, echo = TRUE}
 #Average number of steps taken for each interval for all weekday days or weekend days respectively
 avestepsperitvl2 <- aggregate(steps ~ interval + Day, ac2, mean)
 
@@ -152,9 +166,9 @@ summary(a)
 In general, there are less steps taken during weekends, but it also depend on days. Before 1500, there are less steps taken during weekends, but between 1500 to 2000, there are more steps taken during weekends.
 
 
-Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
+* Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
 
-```{r, echo = TRUE}
+```{r the panel plot, echo = TRUE}
 
 library(ggplot2)
 ggplot(data = ac2, aes(x = interval, y = steps, group = Day)) + 

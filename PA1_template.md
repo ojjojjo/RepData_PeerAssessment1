@@ -3,20 +3,17 @@
 
 ## Loading and preprocessing the data
 
+* Load the data
+
 ```r
 ac <- read.csv("activity.csv")
-str(ac)
 ```
 
-```
-## 'data.frame':	17568 obs. of  3 variables:
-##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ date    : Factor w/ 61 levels "2012-10-01","2012-10-02",..: 1 1 1 1 1 1 1 1 1 1 ...
-##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
-```
+
+* Process/transform the data (if necessary) into a format suitable for your analysis
 
 ```r
-# transform data into date format
+# transform the date into date format
 ac[, 2] <- as.Date(ac[, 2])
 ```
 
@@ -24,6 +21,7 @@ ac[, 2] <- as.Date(ac[, 2])
 
 ## What is mean total number of steps taken per day?
 
+* Make a histogram of the total number of steps taken each day
 
 ```r
 # total number of steps taken per day
@@ -37,10 +35,11 @@ hist(ttlstepspd[, 2], main = "Histogram of the total number of steps taken each 
     xlab = "the total number of steps taken each day")
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+![plot of chunk hist_total#steps](figure/hist_total_steps.png) 
 
 
 
+* Calculate and report the mean and median total number of steps taken per day
 The mean total number of steps taken each day is 1.0766 &times; 10<sup>4</sup>.
 The median total number of steps taken each day is 10765.
 
@@ -48,23 +47,28 @@ The median total number of steps taken each day is 10765.
 
 ## What is the average daily activity pattern?
 
+* Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
 
 ```r
 # Average number of steps taken for each interval
 avestepsperitvl <- aggregate(steps ~ interval, ac, mean, na.action = na.omit)
 
-plot(avestepsperitvl[, 2] ~ avestepsperitvl[, 1], main = "Daily Activity Pattern", 
+plot(avestepsperitvl[, 2] ~ avestepsperitvl[, 1], type = "l", main = "Daily Activity Pattern", 
     xlab = "5-minute Interval", ylab = "Number of steps")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
+![plot of chunk average daily activity pattern](figure/average_daily_activity_pattern.png) 
 
+
+* Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 The 835 5-minute interval contains the maximum number of steps (206.1698).
 
 
 ## Imputing missing values
 
+* Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
 ```r
 
@@ -75,7 +79,9 @@ nrow.na2 <- sum(is.na(ac))
 
 The total number of missing values in the dataset is 2304
 
-Create a new dataset that is equal to the original dataset but with the missing data filled in.
+* Devise a strategy for filling in all of the missing values in the dataset: using the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+* Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ### Steps for filling in Missing Values
 1. Make sure there is no NA in Dates and intervals
@@ -130,7 +136,7 @@ for (i in 1:length(rowindex.na)){
 
 
 
-Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
+* Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
 
 ```r
 # total number of steps taken per day
@@ -144,14 +150,14 @@ hist(ttlstepspd2[, 2], main = "Histogram of the total number of steps taken per 
     xlab = "the total number of steps taken per day")
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
+![plot of chunk hist_total#steps/day_imputed](figure/hist_total_steps/day_imputed.png) 
 
 
 After missing values are filled in, the mean total number of steps taken per day is 1.0766 &times; 10<sup>4</sup>.
 After missing values are filled in, the median total number of steps taken per day is 1.0766 &times; 10<sup>4</sup>.
 
 
-Do these values differ from the estimates from the first part of the assignment?
+* Do these values differ from the estimates from the first part of the assignment?
 
 ```r
 t.test(ttlstepspd[, 2], ttlstepspd2[, 2])
@@ -177,7 +183,7 @@ It does not differ from the estimates from the first part of the assignment. Imp
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+* Create a new factor variable in the dataset with two levels  weekday and weekend indicating whether a given date is a weekday or weekend day.
 
 ```r
 ac2$Day <- weekdays(ac2[, 2])
@@ -244,7 +250,7 @@ summary(a)
 In general, there are less steps taken during weekends, but it also depend on days. Before 1500, there are less steps taken during weekends, but between 1500 to 2000, there are more steps taken during weekends.
 
 
-Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
+* Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)
 
 
 ```r
@@ -254,5 +260,5 @@ ggplot(data = ac2, aes(x = interval, y = steps, group = Day)) + geom_line() +
     facet_grid(Day ~ .) + theme_bw() + ylab("Number of steps") + xlab("Interval")
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
+![plot of chunk the panel plot](figure/the_panel_plot.png) 
 
